@@ -1,0 +1,44 @@
+version: '3'
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task --list-all
+
+  hooks:install:
+    desc: Install git hooks
+    cmds:
+      - lefthook install
+
+  compose:up:
+    desc: Start the local web stack
+    cmds:
+      - docker compose up -d --wait
+
+  compose:down:
+    desc: Stop the local web stack
+    cmds:
+      - docker compose down --remove-orphans
+
+  compose:logs:
+    desc: Follow Compose service logs
+    cmds:
+      - docker compose logs -f
+
+  dev:
+    desc: Start the local development stack
+    deps:
+      - hooks:install
+    cmds:
+      - task: compose:up
+
+  lint:
+    desc: Run linters
+    cmds:
+      - echo "Replace with your lint command (for example: golangci-lint run or pnpm lint)"
+
+  test:
+    desc: Run tests
+    cmds:
+      - echo "Replace with your test command (for example: go test ./... or pnpm test)"

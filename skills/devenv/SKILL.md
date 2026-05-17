@@ -1,7 +1,7 @@
 ---
 name: devenv
 version: "1.0.0"
-description: "Define Nix-based development environments with devenv.sh, including packages, services, scripts, tests, and containers."
+description: "Define Nix-based development environments with devenv.sh, including task runners, Docker Compose workflows, services, and containers."
 tags: [nix, devenv, development-environment, nixos, direnv]
 ---
 
@@ -15,6 +15,7 @@ Use this skill when modifying `devenv.nix`, `devenv.yaml`, or working with deven
 - Adding packages, language runtimes, services, or scripts to a dev environment
 - Integrating devenv with direnv for automatic environment activation
 - Pinning or updating devenv inputs via `devenv.lock`
+- Bootstrapping a web application environment around `Taskfile.yml`, `docker compose`, and git hooks
 
 ## Project File Structure
 
@@ -103,6 +104,8 @@ inputs:
     pkgs.git
     pkgs.jq
     pkgs.curl
+    pkgs.go-task
+    pkgs.lefthook
     pkgs.docker-compose
   ];
 }
@@ -188,17 +191,48 @@ Code that runs every time you enter the devenv shell:
 ```nix
 {
   enterShell = ''
-    echo "Welcome to the dev environment"
-    echo "Node: $(node --version)"
+    if [ ! -f .env ] && [ -f .env.example ]; then
+      cp .env.example .env
+      echo "Created .env from .env.example"
+    fi
   '';
 }
 ```
 
-**Prefer tasks over enterShell for anything non-trivial** - tasks support caching, dependencies, and status checks.
+Use `enterShell` only for small, idempotent shell-entry bootstrap such as creating a missing local `.env` file from `.env.example`.
+
+**Prefer tasks over enterShell for anything non-trivial** - tasks support better reuse, clearer entrypoints, and easier composition with project tooling.
+
+## Web Application Default Stance
+
+For web applications, prefer this split of responsibilities:
+
+- **devenv** for toolchains, packages, env wiring, and shell bootstrapping
+- **`Taskfile.yml` (`go-task`)** for developer entrypoints like `task dev`, `task test`, and `task lint`
+- **`docker compose`** for long-running multi-service application stacks
+
+For typical web applications, prefer **Task + Compose** over `processes.*`.
+
+### Recommended Defaults for Web Apps
+
+- Put developer commands in `Taskfile.yml`
+- Use `docker compose up` / `down` / `logs` for the running stack
+- Use `scripts.*` in `devenv.nix` as thin wrappers around `task ...` when convenient
+- Keep `processes.*` for small local daemons, single binaries, or non-web workflows that do not need Compose
+
+Example:
+
+```nix
+{
+  scripts.dev.exec = "task dev";
+  scripts.test.exec = "task test";
+  scripts.logs.exec = "task compose:logs";
+}
+```
 
 ## Processes
 
-Long-running processes managed by devenv (started with `devenv up`):
+Long-running processes managed by devenv (started with `devenv up`). These are useful for simple local daemons, workers, and lightweight tooling, but they are **not the default orchestration choice for web applications**:
 
 ```nix
 {
@@ -263,9 +297,9 @@ Service state is stored in `$DEVENV_STATE/<service>`. Services start with `deven
 
 ## Tasks
 
-Cacheable, dependency-aware build tasks:
+Cacheable, dependency-aware build tasks inside `devenv.nix`:
 
-```nix/<s
+```nix
 {
   # Basic task
   tasks."myapp:build" = {
@@ -304,6 +338,8 @@ Cacheable, dependency-aware build tasks:
 
 Run tasks: `devenv tasks run myapp:build`
 With inputs: `devenv tasks run myapp:migrate --input name=v2`
+
+For web applications, prefer using **project-level `Taskfile.yml`** as the main task runner, and use `devenv` tasks only when you specifically want Nix-managed lifecycle hooks or shell-entry integration.
 
 ## Tests
 
@@ -592,19 +628,55 @@ in {
 - **NEVER manually edit `.pre-commit-config.yaml`** - it is an auto-generated symlink from git-hooks configuration.
 - **NEVER put real secrets in `devenv.nix` or `.env` with dotenv enabled** - Nix store is world-readable.
 - **Use `devenv search <name>`** to find the correct package attribute before adding to `packages`.
+- **Prefer `Taskfile.yml` (`go-task`) for web application task running** - make `task dev`, `task test`, and `task lint` the main developer entrypoints.
+- **Prefer `docker compose` over `processes.*` for web application stacks** - reserve `processes.*` for simpler local daemons and non-web workflows.
 - **Prefer tasks over enterShell** for setup steps that can be cached or have dependencies.
+- **Keep `enterShell` small and idempotent** - copying `.env.example` to `.env` is fine; installs, migrations, and long-running commands are not.
 - **Use `lib.mkIf` for conditional configuration**, not string interpolation or `if/then/else` at the module level.
 - **Pin binaries in scripts** with `${pkgs.foo}/bin/foo` when PATH conflicts are possible.
 - **Use `devenv.local.nix`** for personal overrides that should not be committed.
 - **Run `devenv test` to validate changes** - it exercises the full environment including processes.
 
+## Starter Template
+
+A basic starter is bundled at `skills/devenv/templates/basic-webapp/`.
+
+It includes:
+
+- `devenv.nix`
+- `devenv.yaml`
+- `.envrc`
+- `.env.example`
+- `compose.yaml`
+- `Taskfile.yml`
+- `lefthook.yml`
+
+The template is intentionally minimal and shows the preferred pattern for web apps in this repository:
+
+- `devenv` for packages and shell bootstrap
+- `Taskfile.yml` for task running
+- `docker compose` for the running stack
+- `lefthook` for git hook wiring
+
 ## Examples
 
 ```nix
-# devenv.nix — minimal Node.js environment
+# devenv.nix — basic web app shell
 { pkgs, ... }: {
-  packages = [ pkgs.git ];
-  languages.javascript = { enable = true; package = pkgs.nodejs_20; };
-  processes.dev.exec = "npm run dev";
+  packages = [
+    pkgs.git
+    pkgs.go-task
+    pkgs.lefthook
+    pkgs.docker-compose
+  ];
+
+  enterShell = ''
+    if [ ! -f .env ] && [ -f .env.example ]; then
+      cp .env.example .env
+    fi
+  '';
+
+  scripts.dev.exec = "task dev";
+  scripts.test.exec = "task test";
 }
 ```
