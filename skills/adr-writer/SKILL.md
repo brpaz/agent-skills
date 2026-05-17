@@ -1,7 +1,7 @@
 ---
 name: adr-writer
 version: "1.0.0"
-description: "Capture major technical decisions in an architecture decision record (ADR) directory with context, alternatives, and consequences."
+description: "Capture major technical decisions in an architecture decision record (ADR)"
 tags: [adr, architecture, documentation, decisions, technical-writing]
 ---
 
@@ -98,7 +98,7 @@ What are we deciding?
 
 ## Inputs
 
-- `adr_directory` – target directory path for ADR files (required)
+- `adr_directory` – target directory path for ADR files. If not provided, defaults to `docs/adr`.
 - Description of the decision to record, including context, alternatives considered, and consequences
 
 ## Outputs
