@@ -21,4 +21,4 @@ jobs:
 
       - name: Run SkillScan Lint
         run: |
-          skillscan-lint scan  --graph ./skills/
+          skillscan-lint scan ./skills/
