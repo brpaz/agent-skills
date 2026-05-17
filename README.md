@@ -8,7 +8,7 @@
 - [`adr-writer`](skills/adr-writer/SKILL.md) — Capture major technical decisions in an architecture decision record (ADR)
 - [`application-healthchecks`](skills/application-healthchecks/SKILL.md) — Design web app and API health checks with RFC-style JSON responses, probe separation, and production-safe dependency policies.
 - [`conventional-commits`](skills/conventional-commits/SKILL.md) — Write Conventional Commits messages and set up commitlint, versioning, and changelog workflows.
-- [`devenv`](skills/devenv/SKILL.md) — Define Nix-based development environments with devenv.sh, including packages, services, scripts, tests, and containers.
+- [`devenv`](skills/devenv/SKILL.md) — Define Nix-based development environments with devenv.sh, including task runners, Docker Compose workflows, services, and containers.
 - [`direnv`](skills/direnv/SKILL.md) — Set up per-directory environments with direnv for `.envrc` loading, variable management, and nix/devenv/asdf integration.
 - [`docker-compose`](skills/docker-compose/SKILL.md) — Define multi-container Docker applications in compose files, including services, networks, volumes, profiles, and health checks.
 - [`dockerfile`](skills/dockerfile/SKILL.md) — Create and improve Dockerfiles with multi-stage builds, caching, security hardening, and debugging guidance.
