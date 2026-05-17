@@ -19,4 +19,4 @@ jobs:
           node-version: lts/*
 
       - name: Install Skills
-        run: npx skills add -y -g -a claude-code ./skills
+        run: npx skills add ./skills -y -g -a claude-code

@@ -4,19 +4,21 @@
 
 ## Available skills
 
-- [`adr-writer`](skills/adr-writer/SKILL.md) — Architecture decision record skill for capturing major technical decisions in an ADR directory with context, alternatives, and consequences.
-- [`conventional-commits`](skills/conventional-commits/SKILL.md) — Conventional Commits specification expert. Use when writing commit messages, configuring commit linting, setting up automated versioning, or generating changelogs.
-- [`devenv`](skills/devenv/SKILL.md) — Nix-based development environment management with `devenv.sh`, including `devenv.nix`, `devenv.yaml`, locks, services, tasks, and integrations.
-- [`direnv`](skills/direnv/SKILL.md) — Per-directory environment management with `direnv`, including `.envrc` patterns, secure loading, and tool integration.
-- [`docker-compose`](skills/docker-compose/SKILL.md) — Multi-container Docker orchestration with Compose for local development and service-based environments.
-- [`dockerfile`](skills/dockerfile/SKILL.md) — Production-ready Dockerfile authoring with multi-stage builds, caching, security hardening, and best practices.
-- [`golang`](skills/golang/SKILL.md) — Go programming best practices, idioms, testing, concurrency, project structure, and performance guidance.
-- [`playwright-devenv`](skills/playwright-devenv/SKILL.md) — Playwright browser automation setup inside `devenv.sh` environments on NixOS.
-- [`project-webapp`](skills/project-webapp/SKILL.md) — Production-ready Nuxt 4 webapp bootstrap with Drizzle ORM, Nuxt UI, Tailwind CSS, Docker, GitHub Actions, Release Drafter, and Renovate.
-- [`readme-writer`](skills/readme-writer/SKILL.md) — README authoring skill for creating and improving project documentation.
-- [`release-drafter`](skills/release-drafter/SKILL.md) — Automated release notes and release workflow setup using Release Drafter and GitHub Actions.
-- [`tailwind-v4`](skills/tailwind-v4/SKILL.md) — Tailwind CSS v4 guidance covering CSS-first configuration, migration, and production best practices.
-- [`vicinae-extensions`](skills/vicinae-extensions/SKILL.md) — Vicinae launcher extension development with React, TypeScript, and the `@vicinae/api` SDK.
+<!-- skills-index:start -->
+- [`adr-writer`](skills/adr-writer/SKILL.md) — Capture major technical decisions in an architecture decision record (ADR) directory with context, alternatives, and consequences.
+- [`conventional-commits`](skills/conventional-commits/SKILL.md) — Write Conventional Commits messages and set up commitlint, versioning, and changelog workflows.
+- [`devenv`](skills/devenv/SKILL.md) — Define Nix-based development environments with devenv.sh, including packages, services, scripts, tests, and containers.
+- [`direnv`](skills/direnv/SKILL.md) — Set up per-directory environments with direnv for `.envrc` loading, variable management, and nix/devenv/asdf integration.
+- [`docker-compose`](skills/docker-compose/SKILL.md) — Define multi-container Docker applications in compose files, including services, networks, volumes, profiles, and health checks.
+- [`dockerfile`](skills/dockerfile/SKILL.md) — Create and improve Dockerfiles with multi-stage builds, caching, security hardening, and debugging guidance.
+- [`golang-development`](skills/golang-development/SKILL.md) — Write and review Go code with idiomatic project structure, errors, concurrency, testing, and performance guidance.
+- [`playwright-devenv`](skills/playwright-devenv/SKILL.md) — Set up Playwright browser automation in devenv.sh on NixOS, including browser installation, version pinning, and troubleshooting.
+- [`project-webapp`](skills/project-webapp/SKILL.md) — Bootstrap a Nuxt 4 web application with Drizzle ORM, Nuxt UI, Tailwind CSS, Docker, GitHub Actions, Release Drafter, and Renovate.
+- [`readme-writer`](skills/readme-writer/SKILL.md) — Create and improve README files with structured installation, usage, API, and contribution guidance.
+- [`release-drafter`](skills/release-drafter/SKILL.md) — Configure Release Drafter for automated release notes, label-based categorization, and semantic version suggestions in GitHub Actions.
+- [`tailwind-v4`](skills/tailwind-v4/SKILL.md) — Configure Tailwind CSS v4 with Oxide, CSS-first directives, migration steps, and production guidance.
+- [`vicinae-extensions`](skills/vicinae-extensions/SKILL.md) — Build Vicinae launcher extensions with React/TypeScript, @vicinae/api, commands, and native UI components.
+<!-- skills-index:end -->
 
 ## Getting started
 

@@ -1,0 +1,38 @@
+name: Update README index
+
+on:
+  push:
+    paths:
+      - "skills/*/SKILL.md"
+      - "scripts/update-readme-index.mjs"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update-readme-index:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: lts/*
+
+      - name: Regenerate README index
+        run: node scripts/update-readme-index.mjs
+
+      - name: Commit updated README
+        uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "chore(docs): update README skills index [skip ci]"
+          file_pattern: README.md
