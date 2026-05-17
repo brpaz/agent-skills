@@ -1,11 +1,20 @@
 ---
 name: conventional-commits
-description: "Conventional Commits specification expert. USE WHEN writing commit messages, configuring commit linting, setting up automated versioning, or generating changelogs. Covers commit message structure, types, scopes, breaking changes, automated tooling (commitlint, semantic-release, standard-version), and best practices for maintainable git history."
+version: "1.0.0"
+description: "Write Conventional Commits messages and set up commitlint, versioning, and changelog workflows."
+tags: [git, commits, versioning, changelog, commitlint, semantic-release]
 ---
 
 # Conventional Commits - Structured Commit Messages
 
 Use this skill when writing commit messages, setting up commit linting, or implementing automated versioning and changelog generation based on the Conventional Commits specification.
+
+## When to Use
+
+- Writing a new commit message and need the correct format
+- Setting up `commitlint` or `husky` for commit validation
+- Configuring `semantic-release` or `standard-version` for automated versioning
+- Generating or reviewing a `CHANGELOG.md`
 
 ## Philosophy
 
@@ -384,7 +393,7 @@ Will reimplement with optimized algorithm in future PR.
 Refs #789
 ```
 
-## Commit Message Best Practices
+## Commit Message Guidelines
 
 ### 1. Atomic Commits
 
@@ -1107,7 +1116,7 @@ If yes, describe migration path:
 | `WIP: work in progress` | Not conventional | Use draft PR, squash before merge |
 | `asdf` | Not descriptive | Follow format |
 
-### ✅ Best Practices
+### Recommended Practices
 
 | Practice | Benefit | Example |
 |----------|---------|---------|
@@ -1302,3 +1311,14 @@ git ca  # Amend last commit
 - [semantic-release Documentation](https://semantic-release.gitbook.io/)
 - [Angular Commit Guidelines](https://github.com/angular/angular/blob/main/CONTRIBUTING.md#commit)
 - [Conventional Changelog](https://github.com/conventional-changelog/conventional-changelog)
+
+## Inputs
+
+- A description of the change being committed (what and why)
+- Scope (optional) – the component or module affected
+- Breaking-change flag if the change breaks the public API
+
+## Outputs
+
+- A properly formatted commit message following the `<type>[scope]: <description>` pattern
+- Optional `BREAKING CHANGE:` footer for major version bumps

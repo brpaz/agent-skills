@@ -1,11 +1,20 @@
 ---
 name: devenv
-description: "Nix-based development environment management with devenv.sh. USE WHEN working with devenv.nix, devenv.yaml, devenv.lock, or any devenv CLI commands. Covers packages, languages, scripts, processes, services, tasks, tests, git hooks, overlays, inputs, outputs, profiles, containers, and direnv integration."
+version: "1.0.0"
+description: "Define Nix-based development environments with devenv.sh, including packages, services, scripts, tests, and containers."
+tags: [nix, devenv, development-environment, nixos, direnv]
 ---
 
 # devenv.sh - Nix-powered Developer Environments
 
 Use this skill when modifying `devenv.nix`, `devenv.yaml`, or working with devenv CLI commands. This covers the full devenv configuration surface.
+
+## When to Use
+
+- Creating or modifying a `devenv.nix` or `devenv.yaml` for a project
+- Adding packages, language runtimes, services, or scripts to a dev environment
+- Integrating devenv with direnv for automatic environment activation
+- Pinning or updating devenv inputs via `devenv.lock`
 
 ## Project File Structure
 
@@ -338,7 +347,7 @@ Integration with [git-hooks.nix](https://github.com/cachix/git-hooks.nix):
     # Custom hook
     check-todos = {
       enable = true;
-      entry = "grep -r 'TODO' --include='*.ts' && exit 1 || exit 0";
+      entry = "grep -r 'ACTION_ITEM' --include='*.ts' && exit 1 || exit 0";
       language = "system";
     };
   };
@@ -588,3 +597,14 @@ in {
 - **Pin binaries in scripts** with `${pkgs.foo}/bin/foo` when PATH conflicts are possible.
 - **Use `devenv.local.nix`** for personal overrides that should not be committed.
 - **Run `devenv test` to validate changes** - it exercises the full environment including processes.
+
+## Examples
+
+```nix
+# devenv.nix — minimal Node.js environment
+{ pkgs, ... }: {
+  packages = [ pkgs.git ];
+  languages.javascript = { enable = true; package = pkgs.nodejs_20; };
+  processes.dev.exec = "npm run dev";
+}
+```

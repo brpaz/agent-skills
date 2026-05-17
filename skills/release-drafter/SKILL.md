@@ -1,11 +1,20 @@
 ---
 name: release-drafter
-description: "Automatically draft release notes as pull requests are merged. USE WHEN setting up automated changelog generation, semantic versioning, PR categorization with labels, or release automation in GitHub Actions. Covers autolabeling, version resolution, templates, and publication workflows."
+version: "1.0.0"
+description: "Configure Release Drafter for automated release notes, label-based categorization, and semantic version suggestions in GitHub Actions."
+tags: [github-actions, release, changelog, versioning, automation]
 ---
 
 # Release Drafter - Automated Release Notes
 
 Use this skill when creating automated release notes workflows with GitHub Actions. Release Drafter drafts release notes by aggregating merged pull requests, categorizing them by labels, and suggesting version numbers based on semantic versioning.
+
+## When to Use
+
+- Adding automated release note drafting to a GitHub repository
+- Setting up PR autolabeling based on file paths, branches, or title patterns
+- Configuring semantic version resolution (patch/minor/major) from PR labels
+- Creating a publication workflow that publishes draft releases via GitHub Actions
 
 ## What is Release Drafter?
 
@@ -913,7 +922,7 @@ on:
 
 **Solution:** Ensure `tag-template` format matches published releases.
 
-## Best Practices
+## Recommended Practices
 
 ### Label Strategy
 
@@ -966,7 +975,7 @@ permissions:
   # Don't grant unnecessary permissions
 ```
 
-### Template Best Practices
+### Template Guidance
 
 - **Use emojis** for visual categories
 - **Link to full changelog** for detailed history
@@ -1146,3 +1155,31 @@ autolabeler:
 - [GitHub Marketplace](https://github.com/marketplace/actions/release-drafter)
 - [Configuration Schema](https://github.com/release-drafter/release-drafter/blob/master/schema.json)
 - [Example Configurations](https://github.com/release-drafter/release-drafter/tree/master/docs)
+
+## Inputs
+
+- GitHub repository with PRs and labels
+- Release Drafter config (`.github/release-drafter.yml`) defining categories, version templates, and autolabel rules
+
+## Outputs
+
+- A GitHub Actions workflow (`.github/workflows/release-drafter.yml`) that maintains a living draft release, updated on every merged PR
+- Draft release notes categorised by label and a suggested next semantic version
+
+## Examples
+
+```yaml
+# .github/release-drafter.yml — minimal config
+template: |
+  ## Changes
+  $CHANGES
+categories:
+  - title: "🚀 Features"
+    labels: [feature]
+  - title: "🐛 Bug Fixes"
+    labels: [bug]
+version-resolver:
+  major: { labels: [breaking] }
+  minor: { labels: [feature] }
+  default: patch
+```

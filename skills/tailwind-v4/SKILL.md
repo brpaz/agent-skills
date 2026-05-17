@@ -1,11 +1,20 @@
 ---
 name: tailwind-v4
-description: "Tailwind CSS v4 with Oxide engine and CSS-first configuration. USE WHEN working with Tailwind v4 projects, migrating from v3, configuring @theme, @source, @utility directives, or leveraging new features like container queries, 3D transforms, and dynamic variants. Covers installation, CSS-first config, migration guide, and production best practices."
+version: "1.0.0"
+description: "Configure Tailwind CSS v4 with Oxide, CSS-first directives, migration steps, and production guidance."
+tags: [tailwind, css, frontend, vite, design-system]
 ---
 
 # Tailwind CSS v4 - CSS-First Configuration & Oxide Engine
 
 Use this skill when working with Tailwind CSS v4, migrating from v3, or configuring modern utility-first CSS with the Oxide engine.
+
+## When to Use
+
+- Starting a new project with Tailwind CSS v4
+- Migrating an existing Tailwind v3 project to v4
+- Configuring `@theme`, `@source`, or `@utility` directives in a CSS file
+- Troubleshooting missing utilities, broken variants, or incorrect design tokens in a v4 project
 
 ## Philosophy
 
@@ -601,7 +610,7 @@ New utilities:
   <!-- All except last child -->
 </div>
 
-<input class="not-placeholder-shown:border-green-500">
+<input class="not-disabled:border-green-500">
 ```
 
 Works with any pseudo-class: `not-first`, `not-disabled`, `not-checked`, etc.
@@ -689,7 +698,7 @@ export default {
 
 Much simpler plugin chain.
 
-## Production Best Practices
+## Production Guidance
 
 ### 1. Explicit Source Paths
 
@@ -996,3 +1005,25 @@ If builds are slow:
 - [Theme Configuration](https://tailwindcss.com/docs/theme)
 - [Functions & Directives Reference](https://tailwindcss.com/docs/functions-and-directives)
 - [GitHub Repository](https://github.com/tailwindlabs/tailwindcss)
+
+## Inputs
+
+- Existing CSS entry file (or new project) and Vite / PostCSS build configuration
+- Design token requirements (colors, spacing, typography) to define in `@theme`
+
+## Outputs
+
+- A CSS entry file using `@import "tailwindcss"` and `@theme` block for design tokens, replacing any `tailwind.config.js`
+
+## Examples
+
+```css
+/* app.css — v4 CSS-first config */
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #6366f1;
+  --font-sans: "Inter", sans-serif;
+  --radius-lg: 0.75rem;
+}
+```

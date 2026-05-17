@@ -1,11 +1,20 @@
 ---
 name: readme-writer
-description: "Expert README generator for software projects. USE WHEN creating, improving, or updating README files. Analyzes project structure, dependencies, and code to generate comprehensive, well-structured documentation with installation, usage, API references, and best practices. Covers open-source, internal tools, libraries, and applications."
+version: "1.0.0"
+description: "Create and improve README files with structured installation, usage, API, and contribution guidance."
+tags: [documentation, readme, markdown, open-source, technical-writing]
 ---
 
 # README Writer - Comprehensive Documentation Generator
 
 Use this skill when creating or improving README documentation for any software project. Generates professional, comprehensive READMEs that follow best practices and community standards.
+
+## When to Use
+
+- Creating a README for a new project or library
+- Improving an outdated or incomplete README
+- Standardising README structure across a set of repositories
+- Adding installation, usage, API reference, or contribution sections that are missing
 
 ## Philosophy
 
@@ -611,9 +620,9 @@ jobs:
 ### More Examples
 
 See [examples/](./examples/) directory for:
-- [TypeScript integration](./examples/typescript.md)
-- [React integration](./examples/react.md)
-- [Docker deployment](./examples/docker.md)
+- TypeScript integration example
+- React integration example
+- Docker deployment example
 ```
 
 **Rules**:
@@ -771,7 +780,7 @@ Aim for >80% coverage.
 
 ### Code of Conduct
 
-Please read our [Code of Conduct](CODE_OF_CONDUCT.md).
+Link to your project's code of conduct when one exists.
 
 ### Questions?
 
@@ -1027,7 +1036,7 @@ See [full configuration reference](#configuration).
 ```markdown
 # Project Name
 
-[English](README.md) | [日本語](README.ja.md) | [中文](README.zh.md)
+English README | Japanese README | Chinese README
 
 > Description in English
 ```
@@ -1050,7 +1059,7 @@ See [full configuration reference](#configuration).
 
 ### Migration from v1 to v2
 
-See [MIGRATION.md](MIGRATION.md) for upgrade guide.
+Link to your migration guide when the project has one.
 ```
 
 ## Common Pitfalls
@@ -1070,7 +1079,7 @@ See [MIGRATION.md](MIGRATION.md) for upgrade guide.
 | **Missing license** | Legal uncertainty | Always include license |
 | **No troubleshooting** | Users stuck, open issues | Document common issues |
 
-### ✅ Best Practices
+### Recommended Practices
 
 | Practice | Benefit | Implementation |
 |----------|---------|----------------|
@@ -1078,7 +1087,7 @@ See [MIGRATION.md](MIGRATION.md) for upgrade guide.
 | **Keep it current** | README reflects reality | Update with each release |
 | **Use formatting** | Scannable, readable | Headers, lists, tables, code blocks |
 | **Show, don't tell** | Code > prose | More examples, less explanation |
-| **Be specific** | "3x faster" > "very fast" | Quantify claims, link to proof |
+| **Be specific** | "3x faster" > "fast" | Quantify claims, link to proof |
 | **Link externally** | Don't duplicate docs | Link to guides, API docs, tutorials |
 | **Version documentation** | Clear expectations | Note which version docs apply to |
 | **Mobile-friendly** | Many read on mobile | Test GitHub rendering |
@@ -1180,13 +1189,13 @@ jobs:
 
 - **ALWAYS include a quick start** - Users need a working example in <2 minutes.
 - **ALWAYS test code examples** - Don't publish code that doesn't work.
-- **ALWAYS be specific** - "3x faster" > "very fast", "2KB" > "lightweight".
+- **ALWAYS be specific** - "3x faster" is better than "fast", and "2KB" is better than "lightweight".
 - **NEVER assume context** - Explain everything, define all terms.
 - **NEVER leave dead links** - Check links before publishing.
 - **Use progressive disclosure** - Essential info first, details in collapsible sections.
 - **Keep it scannable** - Headings, lists, tables, code blocks, not walls of text.
 - **Update with releases** - README must reflect current version.
-- **Show real examples** - Realistic code that users will actually write.
+- **Show real examples** - Include realistic code that users will write.
 - **Link to external docs** - Don't duplicate full guides, link to them.
 - **Include troubleshooting** - Document common issues and solutions.
 - **Make it accessible** - Alt text for images, semantic HTML, clear language.
@@ -1259,3 +1268,12 @@ Hidden content here
 - [Art of README](https://github.com/hackergrrl/art-of-readme)
 - [Standard README](https://github.com/RichardLitt/standard-readme)
 - [Shields.io Badge Generator](https://shields.io/)
+
+## Inputs
+
+- Project source directory (to infer tech stack, dependencies, and entry points)
+- Project description, target audience, and any existing documentation fragments
+
+## Outputs
+
+- A comprehensive `README.md` with badges, description, installation, usage, API reference, configuration, and contributing sections tailored to the project type

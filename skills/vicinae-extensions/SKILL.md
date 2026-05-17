@@ -1,11 +1,20 @@
 ---
 name: vicinae-extensions
-description: "Build Vicinae launcher extensions using React/TypeScript with @vicinae/api SDK. USE WHEN creating Vicinae extensions, implementing commands, working with List/Grid/Form/Detail UI components, or integrating with Raycast compatibility layer. Covers extension structure, API usage, development workflow, and best practices."
+version: "1.0.0"
+description: "Build Vicinae launcher extensions with React/TypeScript, @vicinae/api, commands, and native UI components."
+tags: [vicinae, launcher, react, typescript, linux, extensions]
 ---
 
 # Vicinae Extensions - React/TypeScript Extension Development
 
 Use this skill when building extensions for Vicinae launcher, a high-performance native Linux launcher with Raycast compatibility. This covers the complete extension development workflow using the `@vicinae/api` TypeScript SDK.
+
+## When to Use
+
+- Creating a new Vicinae extension with React/TypeScript
+- Implementing List, Grid, Form, or Detail view commands
+- Integrating with Vicinae APIs (clipboard, notifications, preferences, storage)
+- Porting an existing Raycast extension to Vicinae
 
 ## What is Vicinae?
 
@@ -193,7 +202,6 @@ export default function SearchCommand() {
 interface ListProps {
   children: React.ReactNode;
   isLoading?: boolean;                    // Show loading indicator
-  searchBarPlaceholder?: string;          // Placeholder text
   onSearchTextChange?: (text: string) => void;  // Search handler
   throttle?: boolean;                     // Debounce search (default: false)
   isShowingDetail?: boolean;              // Show detail pane
@@ -227,7 +235,6 @@ type Accessory =
 ```typescript
 <List
   isShowingDetail
-  searchBarPlaceholder="Search items..."
 >
   <List.Item
     title="Item Name"
@@ -428,7 +435,6 @@ export default function CreateCommand() {
       <Form.TextField
         id="name"
         title="Name"
-        placeholder="Enter name"
         error={nameError}
         onChange={() => setNameError(undefined)}
       />
@@ -436,7 +442,6 @@ export default function CreateCommand() {
       <Form.TextField
         id="email"
         title="Email"
-        placeholder="user@example.com"
       />
       
       <Form.Dropdown id="category" title="Category" defaultValue="work">
@@ -453,7 +458,6 @@ export default function CreateCommand() {
       <Form.TextArea
         id="notes"
         title="Notes"
-        placeholder="Additional notes..."
       />
       
       <Form.Checkbox
@@ -1413,7 +1417,7 @@ export default defineConfig({
 });
 ```
 
-## Performance Best Practices
+## Performance Guidance
 
 ### 1. Virtualization
 List and Grid automatically virtualize large datasets - render only visible items.
@@ -1564,7 +1568,7 @@ npm install -D @types/react @types/node
 - **MEMOIZE expensive computations** with useMemo/useCallback.
 - **TEST with npm run dev** before building for production.
 - **FOLLOW Vicinae conventions** for package.json structure and command naming.
-- **USE Icons from Icon enum** rather than custom image files when possible.
+- **Prefer `Icon` enum values** over custom image files when they fit the use case.
 - **VALIDATE form inputs** before submission - set error states appropriately.
 - **CLEAN UP side effects** in useEffect return functions.
 - **USE LocalStorage** for persistence, not files or external databases.
@@ -1747,3 +1751,31 @@ This extension demonstrates:
 - Accessories for metadata
 - Actions for navigation
 - Preferences for configuration
+
+## Inputs
+
+- Extension name, description, and list of commands to implement
+- Any external APIs, local data sources, or system integrations the extension requires
+
+## Outputs
+
+- A complete extension directory with `package.json`, `tsconfig.json`, and `src/` containing React/TypeScript command components ready for `npm run dev`
+
+## Examples
+
+```tsx
+// src/index.tsx — minimal List command
+import { List, ActionPanel, Action } from '@vicinae/api';
+
+export default function HelloCommand() {
+  return (
+    <List navigationTitle="Hello">
+      <List.Item title="Hello, Vicinae!" actions={
+        <ActionPanel>
+          <Action.CopyToClipboard content="Hello, Vicinae!" />
+        </ActionPanel>
+      } />
+    </List>
+  );
+}
+```

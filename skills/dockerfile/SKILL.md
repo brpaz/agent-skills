@@ -1,11 +1,20 @@
 ---
 name: dockerfile
-description: "Writing production-ready Dockerfiles with multi-stage builds, layer optimization, security hardening, and best practices. USE WHEN creating, optimizing, or debugging Dockerfiles for any language/framework. Covers base image selection, caching strategies, security scanning, and common pitfalls."
+version: "1.0.0"
+description: "Create and improve Dockerfiles with multi-stage builds, caching, security hardening, and debugging guidance."
+tags: [docker, dockerfile, containers, ci-cd, security]
 ---
 
 # Dockerfile - Production-Ready Container Images
 
-Use this skill when writing, optimizing, or debugging Dockerfiles. Covers multi-stage builds, layer caching, security best practices, and language-specific patterns.
+Use this skill when writing, optimizing, or debugging Dockerfiles. Covers multi-stage builds, layer caching, security guidance, and language-specific patterns.
+
+## When to Use
+
+- Creating a new `Dockerfile` for any language or framework
+- Optimising an existing Dockerfile for smaller image size or faster builds
+- Adding multi-stage builds, security hardening, or non-root user configuration
+- Debugging build failures or unexpected image behavior
 
 ## Dockerfile Fundamentals
 
@@ -239,7 +248,7 @@ COPY . .
 CMD ["python", "app.py"]
 ```
 
-## Security Best Practices
+## Security Guidance
 
 ### 1. Use Specific Base Image Versions
 
@@ -250,7 +259,7 @@ FROM node:alpine
 # ⚠️ BETTER: Version pinned, but still updates
 FROM node:20-alpine
 
-# ✅ BEST: Fully pinned, reproducible
+# ✅ Fully pinned and reproducible
 FROM node:20.11.0-alpine3.19
 ```
 
@@ -288,7 +297,7 @@ RUN apt-get update && apt-get install -y \
 FROM python:3.12-slim
 # Only install what's needed for runtime
 
-# ✅ BEST: Distroless (no shell, no package manager)
+# ✅ Distroless base image (no shell, no package manager)
 FROM gcr.io/distroless/python3-debian12
 COPY --from=builder /app /app
 CMD ["/app/main.py"]
@@ -1401,9 +1410,37 @@ dive myapp:latest
 
 ## Resources
 
-- [Dockerfile Best Practices (Docker Docs)](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
+- [Dockerfile guidance (Docker Docs)](https://docs.docker.com/develop/develop-images/dockerfile_best-practices/)
 - [BuildKit Documentation](https://github.com/moby/buildkit/blob/master/frontend/dockerfile/docs/reference.md)
 - [hadolint](https://github.com/hadolint/hadolint) - Dockerfile linter
 - [dive](https://github.com/wagoodman/dive) - Layer analysis tool
 - [Docker Scout](https://docs.docker.com/scout/) - Vulnerability scanning
 - [Distroless Images](https://github.com/GoogleContainerTools/distroless)
+
+## Inputs
+
+- Application source directory with build tool config (`package.json`, `go.mod`, `Pipfile`, etc.)
+- Target runtime requirements: language version, exposed ports, run command
+
+## Outputs
+
+- A production-ready `Dockerfile` using multi-stage builds, a minimal base image, non-root user, and optimised layer caching
+
+## Examples
+
+```dockerfile
+# Multi-stage Node.js build
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --only=production
+
+FROM node:20-alpine
+RUN addgroup -S app && adduser -S app -G app
+WORKDIR /app
+COPY --from=builder /app/node_modules ./node_modules
+COPY . .
+USER app
+EXPOSE 3000
+CMD ["node", "server.js"]
+```

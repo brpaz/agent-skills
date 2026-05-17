@@ -1,11 +1,20 @@
 ---
 name: golang-development
-description: "Go programming language best practices, patterns, and idioms. USE WHEN writing, refactoring, or debugging Go code. Covers project structure, error handling, concurrency, testing, performance optimization, and common pitfalls. Essential for building production-ready Go applications."
+version: "1.0.0"
+description: "Write and review Go code with idiomatic project structure, errors, concurrency, testing, and performance guidance."
+tags: [go, golang, backend, concurrency, testing]
 ---
 
-# Go (Golang) - Best Practices and Patterns
+# Go (Golang) - Patterns and Guidance
 
 Use this skill when writing, reviewing, or debugging Go code. Covers idiomatic Go patterns, project structure, concurrency, testing, and production-ready practices.
+
+## When to Use
+
+- Writing new Go packages, services, or CLI tools
+- Reviewing or refactoring existing Go code for idiomatic style
+- Debugging Go concurrency, error handling, or performance issues
+- Setting up Go project structure, module layout, or test harness
 
 ## Go Philosophy
 
@@ -70,7 +79,7 @@ myproject/
 **Rules:**
 - `internal/` cannot be imported by external packages (enforced by Go compiler)
 - One `main.go` per `cmd/<app>/` subdirectory
-- Keep `pkg/` minimal - most code should be in `internal/`
+- Keep `pkg/` minimal. Place application code in `internal/` unless other modules must import it.
 - Flat is better than nested - avoid deep hierarchies
 
 ### Minimal Project
@@ -1161,7 +1170,7 @@ go func() {
 }()
 ```
 
-## Production Best Practices
+## Production Guidance
 
 ### Logging
 
@@ -1381,7 +1390,7 @@ run:
 
 ## Rules
 
-- **ALWAYS check errors immediately** - don't defer error checks unless absolutely necessary.
+- **ALWAYS check errors immediately** - defer error checks only when a later check is intentional and documented.
 - **ALWAYS use `context.Context`** as the first parameter of functions that do I/O or long-running work.
 - **ALWAYS close resources with defer** immediately after opening them (files, connections, etc.).
 - **ALWAYS use `go fmt`** before committing code - no exceptions.
@@ -1473,3 +1482,25 @@ go mod tidy
 - [Go Blog](https://go.dev/blog/)
 - [Standard Library](https://pkg.go.dev/std)
 - [Awesome Go](https://github.com/avelino/awesome-go)
+
+## Inputs
+
+- Go source files, module (`go.mod`), and description of the feature, bug, or refactoring goal
+- Target Go version and any relevant package constraints
+
+## Outputs
+
+- Idiomatic Go code following standard project layout, explicit error handling, and table-driven tests
+
+## Examples
+
+```go
+// Idiomatic error wrapping
+func getUser(id int) (*User, error) {
+    u, err := db.QueryUser(id)
+    if err != nil {
+        return nil, fmt.Errorf("getUser %d: %w", id, err)
+    }
+    return u, nil
+}
+```

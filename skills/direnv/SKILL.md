@@ -1,11 +1,20 @@
 ---
 name: direnv
-description: "Per-directory environment management with direnv. USE WHEN working with .envrc files, environment variable loading, project-specific PATH modifications, or integrating with nix/devenv/asdf. Covers .envrc patterns, direnv stdlib, security model, shell integration, and performance optimization."
+version: "1.0.0"
+description: "Set up per-directory environments with direnv for `.envrc` loading, variable management, and nix/devenv/asdf integration."
+tags: [direnv, environment, dotenv, nix, shell]
 ---
 
 # direnv - Environment Variable Manager
 
 Use this skill when working with `.envrc` files, project-specific environment configuration, or integrating development tools that need automatic environment activation.
+
+## When to Use
+
+- Creating or updating a `.envrc` file for a project
+- Setting up automatic environment activation for nix, devenv, asdf, or mise
+- Troubleshooting environment variable loading or `direnv allow` issues
+- Optimising `.envrc` performance with caching or watch files
 
 ## Philosophy
 
@@ -603,7 +612,7 @@ If > 1 second, optimize your `.envrc`:
 | Changes not applied | Run `direnv allow` after editing `.envrc` |
 | "Command not found" after cd | Check shell hook is installed |
 | Slow activation | Profile with `time direnv exec . true`, optimize .envrc |
-| Variables not unloading | Check for conflicting shell configs setting same vars |
+| Variables remain loaded | Check for conflicting shell configs setting same vars |
 | .envrc not found | Ensure no typos, check `direnv status` |
 | Permission denied | Check file permissions, run `direnv allow` |
 
@@ -653,3 +662,23 @@ direnv exec <path> <cmd>
 - [stdlib Reference](https://direnv.net/man/direnv-stdlib.1.html)
 - [GitHub Repository](https://github.com/direnv/direnv)
 - [Wiki](https://github.com/direnv/direnv/wiki)
+
+## Inputs
+
+- Project root directory with an existing or new `.envrc` file
+- Integration target (nix flake, devenv, asdf, mise, or plain env vars)
+
+## Outputs
+
+- A `.envrc` file (and optionally a `.envrc.local` for personal overrides) that automatically loads the project environment on directory entry
+
+## Examples
+
+```bash
+# .envrc — use a devenv environment
+use devenv
+
+# .envrc — load env vars and add local bin to PATH
+dotenv .env
+PATH_add bin
+```

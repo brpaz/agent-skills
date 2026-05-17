@@ -1,11 +1,20 @@
 ---
 name: docker-compose
-description: "Multi-container Docker orchestration with docker-compose. USE WHEN working with docker-compose.yml, compose.yaml, service definitions, networks, volumes, or local development environments. Covers v2 compose spec, profiles, extends, secrets, health checks, and production patterns."
+version: "1.0.0"
+description: "Define multi-container Docker applications in compose files, including services, networks, volumes, profiles, and health checks."
+tags: [docker, docker-compose, containers, orchestration, devops]
 ---
 
 # Docker Compose - Multi-Container Orchestration
 
 Use this skill when defining multi-container applications, orchestrating services locally, or managing development environments with Docker.
+
+## When to Use
+
+- Writing or updating a `docker-compose.yml` / `compose.yaml` file
+- Defining multi-service local development stacks (app + database + cache, etc.)
+- Configuring named volumes, custom networks, health checks, or profiles
+- Migrating from Compose V1 (`docker-compose`) to V2 (`docker compose`)
 
 ## Philosophy
 
@@ -1026,3 +1035,38 @@ docker compose -f compose.yaml -f compose.prod.yaml up
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [Compose File Reference](https://docs.docker.com/compose/compose-file/)
 - [Awesome Compose](https://github.com/docker/awesome-compose) - Sample compose files
+
+## Inputs
+
+- Service definitions: image or build context, ports, environment variables, volumes, dependencies
+- Network and volume requirements for the application stack
+
+## Outputs
+
+- A `compose.yaml` (or `docker-compose.yml`) file that starts the full stack with `docker compose up`
+
+## Examples
+
+```yaml
+# compose.yaml — app + postgres
+services:
+  app:
+    build: .
+    ports: ["3000:3000"]
+    environment:
+      DATABASE_URL: postgres://postgres:secret@db:5432/myapp
+    depends_on:
+      db:
+        condition: service_healthy
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+    volumes: [db-data:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+
+volumes:
+  db-data:
+```

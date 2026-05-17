@@ -1,11 +1,20 @@
 ---
 name: project-webapp
-description: "Bootstrap a production-ready Nuxt 4 web application with Drizzle ORM (SQLite), Nuxt UI, Tailwind CSS, Docker deployment, GitHub Actions CI/CD, Release Drafter, and Renovate. USE WHEN creating a new full-stack webapp from scratch with modern tooling, type safety, automated migrations, containerization, and automated dependency management."
+version: "1.0.0"
+description: "Bootstrap a Nuxt 4 web application with Drizzle ORM, Nuxt UI, Tailwind CSS, Docker, GitHub Actions, Release Drafter, and Renovate."
+tags: [nuxt, vue, drizzle, sqlite, tailwind, docker, github-actions]
 ---
 
 # Project Webapp - Production-Ready Nuxt 4 Stack
 
 Use this skill when bootstrapping a new full-stack web application with: Nuxt 4, Drizzle ORM + SQLite, Nuxt UI + Tailwind CSS, Docker Compose for local dev, GitHub Actions for CI/CD, Release Drafter for automated release notes, and Renovate for dependency updates.
+
+## When to Use
+
+- Bootstrapping a new full-stack web application from scratch
+- Setting up a Nuxt 4 project with type-safe database access via Drizzle ORM
+- Configuring Docker Compose for local development and production deployment
+- Adding GitHub Actions CI/CD, Release Drafter, and Renovate to an existing Nuxt project
 
 ## Philosophy
 
@@ -1091,3 +1100,22 @@ git tag v1.0.0 && git push --tags  # Triggers deployment
 - [Docker Documentation](https://docs.docker.com/)
 - [Release Drafter](https://github.com/release-drafter/release-drafter)
 - [Renovate Documentation](https://docs.renovatebot.com/)
+
+## Inputs
+
+- Project name, description, and target domain
+- GitHub repository URL for CI/CD and Renovate configuration
+
+## Outputs
+
+- Complete Nuxt 4 project scaffold with Drizzle ORM, Nuxt UI, Tailwind CSS v4, Docker Compose, GitHub Actions workflows, Release Drafter config, and Renovate config
+
+## Examples
+
+```bash
+# Scaffold a new webapp named "my-app"
+npx nuxi@latest init my-app
+cd my-app
+npm install drizzle-orm better-sqlite3 @nuxt/ui
+# Then follow the skill's step-by-step setup for each layer
+```

@@ -1,11 +1,20 @@
 ---
 name: adr-writer
-description: "Architecture decision record skill for capturing major technical decisions in an ADR directory with context, alternatives, and consequences."
+version: "1.0.0"
+description: "Capture major technical decisions in an architecture decision record (ADR) directory with context, alternatives, and consequences."
+tags: [adr, architecture, documentation, decisions, technical-writing]
 ---
 
 # ADR Writer
 
 Use this skill when the project needs a durable record of a major technical decision.
+
+## When to Use
+
+- A significant architectural or technology choice is being made
+- A decision spans multiple code changes or will matter to future contributors
+- You need to document rejected alternatives and their tradeoffs
+- An existing ADR needs to be superseded with a new decision
 
 ## Purpose
 
@@ -86,3 +95,21 @@ What are we deciding?
 - avoid duplicating an existing ADR
 - if a prior ADR is being changed, create a new ADR that supersedes it unless a minor edit is enough
 - reference the ADR from the relevant issue or plan when appropriate
+
+## Inputs
+
+- `adr_directory` – target directory path for ADR files (required)
+- Description of the decision to record, including context, alternatives considered, and consequences
+
+## Outputs
+
+- A new numbered Markdown ADR file in `adr_directory` following the template format (e.g. `0001-short-kebab-title.md`)
+
+## Examples
+
+```
+# Decision: use PostgreSQL instead of SQLite
+adr_directory: docs/adr
+```
+
+Produces `docs/adr/0001-use-postgresql.md` with Status, Context, Decision, Alternatives, and Consequences sections.

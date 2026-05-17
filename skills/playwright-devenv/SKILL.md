@@ -1,11 +1,20 @@
 ---
 name: playwright-devenv
-description: "Setting up Playwright browser automation within devenv.sh development environments on NixOS. USE WHEN configuring Playwright with devenv.nix, handling browser installation, version pinning, or troubleshooting Playwright browser issues in Nix-based environments."
+version: "1.0.0"
+description: "Set up Playwright browser automation in devenv.sh on NixOS, including browser installation, version pinning, and troubleshooting."
+tags: [playwright, devenv, nix, nixos, testing, browser-automation]
 ---
 
 # Playwright with devenv.sh - NixOS Setup
 
 Use this skill when setting up Playwright browser automation in a devenv.sh project on NixOS. This handles browser installation, version pinning, environment configuration, and common troubleshooting.
+
+## When to Use
+
+- Adding Playwright to a project that uses devenv.sh on NixOS
+- Resolving browser launch failures caused by missing Nix store library paths
+- Pinning or updating Playwright versions in both `devenv.yaml` and `package.json`
+- Configuring CI to run Playwright tests inside a Nix environment
 
 ## The Problem with Playwright on NixOS
 
@@ -432,3 +441,27 @@ npm run test
 - [Playwright Documentation](https://playwright.dev/)
 - [devenv.sh Documentation](https://devenv.sh/)
 - [NixOS Package Search](https://search.nixos.org/packages)
+
+## Inputs
+
+- `devenv.nix` and `devenv.yaml` for the project
+- Desired Playwright version (must match in both Nix and npm)
+- Target browsers (chromium, firefox, webkit)
+
+## Outputs
+
+- Updated `devenv.nix` with `playwright-driver.browsers` package and required env vars (`PLAYWRIGHT_BROWSERS_PATH`, `PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS`)
+- `devenv.yaml` with the correct nixpkgs revision for the matching Playwright version
+
+## Examples
+
+```nix
+# devenv.nix — Playwright on NixOS
+{ pkgs, ... }: {
+  packages = [ pkgs.playwright-driver.browsers ];
+  env = {
+    PLAYWRIGHT_BROWSERS_PATH = "${pkgs.playwright-driver.browsers}";
+    PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS = "true";
+  };
+}
+```
