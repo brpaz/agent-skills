@@ -11,16 +11,19 @@
 - [`devenv`](skills/devenv/SKILL.md) — Define Nix-based development environments with devenv.sh, including task runners, Docker Compose workflows, services, and containers.
 - [`direnv`](skills/direnv/SKILL.md) — Set up per-directory environments with direnv for `.envrc` loading, variable management, and nix/devenv/asdf integration.
 - [`docker-compose`](skills/docker-compose/SKILL.md) — Define multi-container Docker applications in compose files, including services, networks, volumes, profiles, and health checks.
+- [`docker-setup`](skills/docker-setup/SKILL.md) — Add Docker to an existing project — analyze the codebase to generate a fitting Dockerfile, .dockerignore, and .hadolint.yaml, prompt before adding docker-compose, and propose a CI build stage in existing GitHub Actions workflows.
 - [`dockerfile`](skills/dockerfile/SKILL.md) — Create and improve Dockerfiles with multi-stage builds, caching, security hardening, and debugging guidance.
 - [`github-actions-docker`](skills/github-actions-docker/SKILL.md) — Build, smoke-test, and publish Docker images with GitHub Actions using current official actions, release-published triggers, short-SHA test tags, and Compose CI stacks.
+- [`gitleaks-setup`](skills/gitleaks-setup/SKILL.md) — Add or update Gitleaks secret-scanning to an existing repo — GitHub Action workflow, .gitleaks.toml, hook via lefthook/pre-commit, Taskfile task, devenv/mise tool pin — idempotently, without clobbering existing config.
 - [`golang-development`](skills/golang-development/SKILL.md) — Write and review Go code with idiomatic project structure, errors, concurrency, testing, and performance guidance.
 - [`golang-slog`](skills/golang-slog/SKILL.md) — Implement structured logging in Go with log/slog, including logger setup, common attributes, context propagation, redaction, and performance-minded patterns.
-- [`golang-testcontainers`](skills/golang-testcontainers/SKILL.md) — Write Go integration tests with testcontainers-go
-- [`golang-testing`](skills/golang-testing/SKILL.md) — Write idiomatic Go tests.
+- [`golang-testing`](skills/golang-testing/SKILL.md) — Write idiomatic Go tests — unit tests, table-driven patterns, mocking, and testcontainers-go integration tests against real Postgres, Redis, and other containerised dependencies.
 - [`playwright-devenv`](skills/playwright-devenv/SKILL.md) — Set up Playwright browser automation in devenv.sh on NixOS, including browser installation, version pinning, and troubleshooting.
 - [`project-webapp`](skills/project-webapp/SKILL.md) — Bootstrap a Nuxt 4 web application with Drizzle ORM, Nuxt UI, Tailwind CSS, Docker, GitHub Actions, Release Drafter, and Renovate.
 - [`readme-writer`](skills/readme-writer/SKILL.md) — Create and improve README files with structured installation, usage, API, and contribution guidance.
 - [`release-drafter`](skills/release-drafter/SKILL.md) — Configure Release Drafter for automated release notes, label-based categorization, and semantic version suggestions in GitHub Actions.
+- [`release-drafter-setup`](skills/release-drafter-setup/SKILL.md) — Add or update Release Drafter on an existing repo — GitHub Action workflow, .github/release-drafter.yml, required labels via EndBug/label-sync — idempotently, without clobbering existing config, with a production-readiness review of anything already in place.
+- [`renovate-setup`](skills/renovate-setup/SKILL.md) — Add or update Renovate on an existing project — infer the tech stack, generate a renovate.json tuned to it (managers, grouping, schedule, automerge, digest pinning), following https://docs.renovatebot.com/ best practices, idempotently, without clobbering existing config.
 - [`structured-logging`](skills/structured-logging/SKILL.md) — Design language-agnostic structured logs with consistent fields, correlation IDs, safe context, and production-ready observability guidance.
 - [`tailwind-v4`](skills/tailwind-v4/SKILL.md) — Configure Tailwind CSS v4 with Oxide, CSS-first directives, migration steps, and production guidance.
 - [`vicinae-extensions`](skills/vicinae-extensions/SKILL.md) — Build Vicinae launcher extensions with React/TypeScript, @vicinae/api, commands, and native UI components.

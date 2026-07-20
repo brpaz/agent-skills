@@ -473,7 +473,6 @@ Reinstalls only when `package.json` changes.
 # .envrc
 export COMPOSE_PROJECT_NAME="myapp"
 export COMPOSE_FILE="docker-compose.yml:docker-compose.dev.yml"
-export DOCKER_BUILDKIT=1
 ```
 
 ### With Terraform

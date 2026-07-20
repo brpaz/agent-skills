@@ -31,14 +31,17 @@ FROM node:20-alpine
 LABEL maintainer="team@example.com"
 LABEL version="1.0"
 
+# Enable pnpm via Corepack (ships with Node 16.9+)
+RUN corepack enable
+
 # Working directory
 WORKDIR /app
 
 # Copy files
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies
-RUN npm ci --only=production
+RUN pnpm install --frozen-lockfile --prod
 
 # Copy application code
 COPY . .
@@ -82,28 +85,31 @@ Multi-stage builds separate build dependencies from runtime dependencies, dramat
 # ============================================
 FROM node:20-alpine AS builder
 
+RUN corepack enable
 WORKDIR /app
 
 # Install dependencies (including devDependencies)
-COPY package*.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Build application
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
 # ============================================
 # Runtime Stage
 # ============================================
 FROM node:20-alpine AS runtime
 
+RUN corepack enable
+
 # Security: Run as non-root
 USER node
 WORKDIR /app
 
 # Copy only production dependencies
-COPY --chown=node:node package*.json ./
-RUN npm ci --only=production && npm cache clean --force
+COPY --chown=node:node package.json pnpm-lock.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --prod
 
 # Copy built artifacts from builder stage
 COPY --from=builder --chown=node:node /app/dist ./dist
@@ -115,9 +121,11 @@ EXPOSE 3000
 CMD ["node", "dist/index.js"]
 ```
 
+`corepack enable` has to run in every stage that uses `pnpm` — each `FROM` starts from a clean copy of the base image, so Corepack's shims don't carry over between stages. For files with many stages, factor a shared `FROM node:20-alpine AS base` step that runs `corepack enable` once and have the other stages `FROM base` instead, to avoid repeating it.
+
 **Why multi-stage?**
-- Build stage: `npm ci` (all deps) + `npm run build` = ~500MB
-- Runtime stage: `npm ci --only=production` + built artifacts = ~150MB
+- Build stage: `pnpm install --frozen-lockfile` (all deps) + `pnpm run build` = ~500MB
+- Runtime stage: `pnpm install --frozen-lockfile --prod` + built artifacts = ~150MB
 - **Result:** 70% smaller final image
 
 ### Pattern: Separate Dependency Stage
@@ -132,30 +140,33 @@ For better caching when dependencies change infrequently:
 # ============================================
 FROM node:20-alpine AS deps
 
+RUN corepack enable
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # ============================================
 # Build Stage
 # ============================================
 FROM node:20-alpine AS builder
 
+RUN corepack enable
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
 # ============================================
 # Runtime Stage
 # ============================================
 FROM node:20-alpine AS runtime
 
+RUN corepack enable
 USER node
 WORKDIR /app
 
-COPY --chown=node:node package*.json ./
-RUN npm ci --only=production && npm cache clean --force
+COPY --chown=node:node package.json pnpm-lock.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --prod
 
 COPY --from=builder --chown=node:node /app/dist ./dist
 
@@ -174,11 +185,11 @@ Docker caches each instruction as a layer. Order matters for build speed.
 ```dockerfile
 # ❌ BAD: Changes to code invalidate dependency cache
 COPY . .
-RUN npm ci
+RUN pnpm install --frozen-lockfile
 
 # ✅ GOOD: Dependencies cached separately from code
-COPY package*.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 COPY . .
 ```
 
@@ -205,12 +216,7 @@ COPY . .                           # 4. Code (frequently changes)
 
 ### BuildKit Cache Mounts
 
-Enable BuildKit for advanced caching:
-
-```bash
-export DOCKER_BUILDKIT=1
-docker build .
-```
+BuildKit has been the default builder since Docker Engine 23 — no `DOCKER_BUILDKIT=1` needed on current Docker versions.
 
 Use cache mounts for package managers:
 
@@ -219,12 +225,13 @@ Use cache mounts for package managers:
 
 FROM node:20-alpine
 
+RUN corepack enable
 WORKDIR /app
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 
-# Cache npm cache across builds
-RUN --mount=type=cache,target=/root/.npm \
-    npm ci --only=production
+# Cache the pnpm store across builds
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile --prod
 
 COPY . .
 CMD ["node", "index.js"]
@@ -384,19 +391,21 @@ secrets/
 # ============================================
 FROM node:20-alpine AS deps
 
+RUN corepack enable
 WORKDIR /app
 
 # Copy package files
-COPY package.json package-lock.json ./
+COPY package.json pnpm-lock.yaml ./
 
 # Install all dependencies (including dev)
-RUN npm ci
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # ============================================
 # Build Stage
 # ============================================
 FROM node:20-alpine AS builder
 
+RUN corepack enable
 WORKDIR /app
 
 # Copy dependencies from deps stage
@@ -406,23 +415,24 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Build (TypeScript, bundling, etc.)
-RUN npm run build
+RUN pnpm run build
 
 # ============================================
 # Runtime Stage
 # ============================================
 FROM node:20-alpine AS runtime
 
+RUN corepack enable
+
 # Run as non-root
 USER node
 WORKDIR /app
 
 # Copy package files
-COPY --chown=node:node package.json package-lock.json ./
+COPY --chown=node:node package.json pnpm-lock.yaml ./
 
 # Install only production dependencies
-RUN npm ci --only=production && \
-    npm cache clean --force
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile --prod
 
 # Copy built artifacts
 COPY --from=builder --chown=node:node /app/dist ./dist
@@ -688,13 +698,14 @@ CMD ["java", "-jar", "app.jar"]
 # ============================================
 FROM node:20-alpine AS builder
 
+RUN corepack enable
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci
+COPY package.json pnpm-lock.yaml ./
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 COPY . .
-RUN npm run build
+RUN pnpm run build
 
 # ============================================
 # Runtime Stage
@@ -768,15 +779,16 @@ ARG ENVIRONMENT=production
 
 FROM node:20-alpine
 
+RUN corepack enable
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 
 # Install dependencies based on environment
 RUN if [ "$ENVIRONMENT" = "production" ]; then \
-        npm ci --only=production; \
+        pnpm install --frozen-lockfile --prod; \
     else \
-        npm ci; \
+        pnpm install --frozen-lockfile; \
     fi
 
 COPY . .
@@ -803,10 +815,11 @@ ARG COMMIT_SHA=unknown
 
 FROM node:20-alpine
 
+RUN corepack enable
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm ci --only=production
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile --prod
 
 COPY . .
 
@@ -834,13 +847,14 @@ docker build \
 
 FROM node:20-alpine
 
+RUN corepack enable
 WORKDIR /app
 
-COPY package*.json ./
+COPY package.json pnpm-lock.yaml ./
 
-# Mount .npmrc as secret
+# Mount .npmrc as secret (pnpm reads the same .npmrc registry/auth config as npm)
 RUN --mount=type=secret,id=npmrc,target=/root/.npmrc \
-    npm ci --only=production
+    pnpm install --frozen-lockfile --prod
 
 COPY . .
 CMD ["node", "index.js"]
@@ -947,9 +961,10 @@ FROM gcr.io/distroless/nodejs20-debian12
 
 **4. Remove unnecessary files**
 ```dockerfile
-# Remove cache and temp files
-RUN npm ci --only=production && \
-    npm cache clean --force
+# pnpm's content-addressable store doesn't need an explicit cache-clean step —
+# use a cache mount instead so the store never lands in an image layer at all
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile --prod
 
 RUN pip install --no-cache-dir -r requirements.txt
 
@@ -965,7 +980,7 @@ COPY . .
 
 # ✅ GOOD: Copy only what's needed
 COPY src ./src
-COPY package.json ./
+COPY package.json pnpm-lock.yaml ./
 ```
 
 ### Build Speed
@@ -989,9 +1004,8 @@ COPY --from=stage2 /output2 ./
 ```
 
 **4. Use BuildKit features**
-```bash
-export DOCKER_BUILDKIT=1
-```
+
+BuildKit is the default builder since Docker Engine 23 — its features (cache mounts, secrets, SSH forwarding) are available without opting in.
 
 ### Reproducible Builds
 
@@ -1007,9 +1021,9 @@ RUN apk add --no-cache \
 
 **2. Use lock files**
 ```dockerfile
-# Node.js: package-lock.json or pnpm-lock.yaml
-COPY package.json package-lock.json ./
-RUN npm ci
+# Node.js: pnpm-lock.yaml
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 # Python: requirements.txt with pinned versions or poetry.lock
 COPY requirements.txt .
@@ -1040,11 +1054,11 @@ CMD ["node", "index.js"]
 ### 2. Installing Unnecessary Dependencies
 
 ```dockerfile
-# ❌ BAD: Installs dev dependencies in production
-RUN npm install
+# ❌ BAD: Installs dev dependencies in production, and doesn't fail on a lockfile drift
+RUN pnpm install
 
-# ✅ GOOD: Production only
-RUN npm ci --only=production
+# ✅ GOOD: Production only, fails the build if the lockfile is out of sync
+RUN pnpm install --frozen-lockfile --prod
 ```
 
 ### 3. Not Using .dockerignore
@@ -1100,11 +1114,12 @@ RUN curl -o file.tar.gz https://example.com/file.tar.gz
 ### 7. Not Cleaning Package Manager Caches
 
 ```dockerfile
-# ❌ BAD: npm cache left in image
-RUN npm ci
+# ❌ BAD: pnpm store written straight into the image layer
+RUN pnpm install --frozen-lockfile --prod
 
-# ✅ GOOD: Clean cache
-RUN npm ci && npm cache clean --force
+# ✅ GOOD: cache mount keeps the store out of the layer entirely — nothing to clean
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile --prod
 ```
 
 ### 8. Multiple EXPOSE Instructions
@@ -1303,7 +1318,7 @@ jobs:
 - **ALWAYS run as non-root user** in final stage - critical security practice.
 - **ALWAYS pin base image versions** with full tags (e.g., `node:20.11.0-alpine3.19`) for reproducibility.
 - **ALWAYS create and use .dockerignore** - prevents copying unnecessary files and exposing secrets.
-- **ALWAYS clean package manager caches** in the same RUN instruction (`npm cache clean --force`, `--no-cache-dir` for pip).
+- **ALWAYS keep package manager caches out of image layers** — for pnpm, use a `--mount=type=cache,id=pnpm,target=/pnpm/store` mount instead of writing the store into a layer; for pip, `--no-cache-dir`.
 - **ALWAYS combine apt-get update + install + cleanup** in a single RUN instruction.
 - **NEVER use `latest` tag** for base images - breaks reproducibility.
 - **NEVER copy secrets into image layers** - use BuildKit secrets or runtime environment variables.
@@ -1377,9 +1392,6 @@ CMD ["<entrypoint>", "<args>"]
 # Build
 docker build -t myapp:latest .
 
-# Build with BuildKit
-DOCKER_BUILDKIT=1 docker build -t myapp:latest .
-
 # Build specific stage
 docker build --target debug -t myapp:debug .
 
@@ -1431,9 +1443,10 @@ dive myapp:latest
 ```dockerfile
 # Multi-stage Node.js build
 FROM node:20-alpine AS builder
+RUN corepack enable
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile --prod
 
 FROM node:20-alpine
 RUN addgroup -S app && adduser -S app -G app

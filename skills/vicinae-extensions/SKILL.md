@@ -365,15 +365,17 @@ interface GridProps {
   throttle?: boolean;
 }
 
-enum Grid.Fit {
-  Contain = "contain",  // Fit within bounds
-  Fill = "fill"         // Fill completely
-}
+namespace Grid {
+  export enum Fit {
+    Contain = "contain",  // Fit within bounds
+    Fill = "fill"         // Fill completely
+  }
 
-enum Grid.Inset {
-  Small = "small",
-  Medium = "medium",
-  Large = "large"
+  export enum Inset {
+    Small = "small",
+    Medium = "medium",
+    Large = "large"
+  }
 }
 ```
 
@@ -824,10 +826,12 @@ await toast.hide();
 ### Toast Styles
 
 ```typescript
-enum Toast.Style {
-  Success = "success",      // Green checkmark
-  Failure = "failure",      // Red X
-  Animated = "animated"     // Loading spinner
+namespace Toast {
+  export enum Style {
+    Success = "success",      // Green checkmark
+    Failure = "failure",      // Red X
+    Animated = "animated"     // Loading spinner
+  }
 }
 ```
 
