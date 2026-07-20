@@ -27,6 +27,7 @@
 - [`structured-logging`](skills/structured-logging/SKILL.md) — Design language-agnostic structured logs with consistent fields, correlation IDs, safe context, and production-ready observability guidance.
 - [`tailwind-v4`](skills/tailwind-v4/SKILL.md) — Configure Tailwind CSS v4 with Oxide, CSS-first directives, migration steps, and production guidance.
 - [`vicinae-extensions`](skills/vicinae-extensions/SKILL.md) — Build Vicinae launcher extensions with React/TypeScript, @vicinae/api, commands, and native UI components.
+- [`zensical-setup`](skills/zensical-setup/SKILL.md) — Add Zensical (the Rust-powered successor to Material for MkDocs) to a new or existing project — generate zensical.toml, scaffold docs/, migrate an existing mkdocs.yml, and wire a GitHub Pages deploy workflow, idempotently, without clobbering existing config.
 <!-- skills-index:end -->
 
 ## Getting started
