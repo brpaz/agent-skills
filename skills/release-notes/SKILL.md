@@ -3,6 +3,7 @@ name: release-notes
 version: "1.0.0"
 description: "Generate release notes from all commits/PRs merged since the latest published GitHub release. Reuses .github/release-drafter.yml (categories, version-resolver, template, exclude-labels) when present; falls back to Conventional Commits grouping otherwise."
 tags: [release-notes, changelog, release-drafter, git, github, conventional-commits, versioning]
+allowed-tools: Bash(gh release list*), Bash(gh pr list*)
 ---
 
 # Release Notes — generate from commits since the last published release
